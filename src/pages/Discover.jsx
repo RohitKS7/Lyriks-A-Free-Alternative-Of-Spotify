@@ -1,14 +1,23 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Error, Loader, SongCard } from "../components";
 import { genres } from "../assets/constants";
 import { useGetSongsByCountryQuery } from "../redux/services/musicAPI";
 
 const Discover = () => {
+  // NOTE "useSelector" let us select a specific state from its state storage which is currently 'playerSlice' and you can see it that we have created a state called "player" which we are accessing now
+  const { activeSong, isPlaying } = useSelector((state) => state.player);
+
+  // NOTE "useDispatch" let use make changes into the selected redux state
+  const dispatch = useDispatch();
+
   const { data, isFetching, error } = useGetSongsByCountryQuery();
 
   if (isFetching) return <Loader title="Loading songs..." />;
 
   const topSongsList = data?.result?.tracks;
+
+  console.log(topSongsList);
 
   if (error) return <Error />;
 
@@ -35,7 +44,14 @@ const Discover = () => {
 
       <div className="flex flex-wrap sm:justify-start justify-center gap-8">
         {topSongsList?.map((song, i) => (
-          <SongCard key={song.key} song={song} i={i} />
+          <SongCard
+            key={song.key}
+            song={song}
+            data={data}
+            i={i}
+            isPlaying={isPlaying}
+            activeSong={activeSong}
+          />
         ))}
       </div>
     </div>
