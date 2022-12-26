@@ -8,7 +8,7 @@ const Discover = () => {
   // NOTE "useSelector" let us select a specific state from its state storage which is currently 'playerSlice' and you can see it that we have created a state called "player" which we are accessing now
   const { activeSong, isPlaying } = useSelector((state) => state.player);
 
-  // NOTE "useDispatch" let use make changes into the selected redux state
+  // NOTE "useDispatch" lets us make changes in the selected redux state
   const dispatch = useDispatch();
 
   const { data, isFetching, error } = useGetSongsByCountryQuery();
@@ -16,8 +16,6 @@ const Discover = () => {
   if (isFetching) return <Loader title="Loading songs..." />;
 
   const topSongsList = data?.result?.tracks;
-
-  console.log(topSongsList);
 
   if (error) return <Error />;
 
