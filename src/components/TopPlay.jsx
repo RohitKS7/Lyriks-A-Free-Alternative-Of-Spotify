@@ -11,29 +11,64 @@ import { useGetSongsByCountryQuery } from "../redux/services/musicAPI";
 import "swiper/css";
 import "swiper/css/free-mode";
 
-const TopChartCard = ({ song, i }) => (
+const TopChartCard = ({
+  song,
+  i,
+  isPlaying,
+  activeSong,
+  handlePauseClick,
+  handlePlayClick,
+}) => (
   <div className="w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 rounded-lg cursor-pointer mb-2">
-    {song.title}
+    <h3 className="font-bold text-base text-white mr-3">{i + 1}.</h3>
+    <div className="flex-1 flex flex-row justify-between items-center">
+      <img
+        src={song?.images?.coverart}
+        alt={song?.title}
+        className="w-20 h-20 rounded-lg"
+      />
+
+      <div className="flex-1 flex flex-col justify-center mx-3">
+        <Link to={`/songs/${song.key}`}>
+          <p className="text-xl font-bold text-white"> {song?.title} </p>
+        </Link>
+        <Link to={`/songs/${song?.artists[0].adamid}`}>
+          <p className="text-base text-gray-300 mt-1"> {song?.subtitle} </p>
+        </Link>
+      </div>
+    </div>
+
+    <PlayPause
+      song={song}
+      handlePause={handlePauseClick}
+      handlePlay={handlePlayClick}
+      isPlaying={isPlaying}
+      activeSong={activeSong}
+    />
   </div>
 );
 
 const TopPlay = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
+  const { data, isFetching } = useGetSongsByCountryQuery("IN");
   const divRef = useRef(null);
-  const { data } = useGetSongsByCountryQuery("IN");
-
-  const topSongsInIndia = data?.result?.tracks?.slice(0, 5);
 
   useEffect(() => {
     divRef.current.scrollIntoView({ behavior: "smooth" });
   });
 
+  let topSongsInIndia;
+
+  if (!isFetching) {
+    topSongsInIndia = data?.result?.tracks?.slice(0, 5);
+  }
+
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = () => {
+  const handlePlayClick = (song, i) => {
     dispatch(setActiveSong({ song, data, i }));
     dispatch(playPause(true));
   };
@@ -51,8 +86,16 @@ const TopPlay = () => {
           </Link>
         </div>
         <div className="mt-4 flex flex-col gap-1">
-          {topSongsInIndia.map((song, i) => (
-            <TopChartCard song={song} key={song.key} i={i} />
+          {topSongsInIndia?.map((song, i) => (
+            <TopChartCard
+              song={song}
+              key={song.key}
+              i={i}
+              isPlaying={isPlaying}
+              activeSong={activeSong}
+              handlePauseClick={handlePauseClick}
+              handlePlayClick={() => handlePlayClick(song, i)}
+            />
           ))}
         </div>
       </div>
@@ -74,7 +117,7 @@ const TopPlay = () => {
           module={[FreeMode]}
           className="mt-4"
         >
-          {topSongsInIndia.map((song) => (
+          {topSongsInIndia?.map((song) => (
             <SwiperSlide
               key={song?.key}
               style={{ width: "25%", height: "auto" }}

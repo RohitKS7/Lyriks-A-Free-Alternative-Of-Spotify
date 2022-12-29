@@ -19,7 +19,17 @@ export const musicApi = createApi({
       query: (countryCode) =>
         `/top_country_tracks?country_code=${countryCode}&limit=100`,
     }),
+    getSongDetails: builder.query({
+      query: (songId) => `/track_about?track_id=${songId}`,
+    }),
+    getRelatedSongs: builder.query({
+      query: (songId) => `/related_tracks?track_id=${songId}&limit=10`,
+    }),
   }),
 });
 
-export const { useGetSongsByCountryQuery } = musicApi;
+export const {
+  useGetSongsByCountryQuery,
+  useGetSongDetailsQuery,
+  useGetRelatedSongsQuery,
+} = musicApi;
