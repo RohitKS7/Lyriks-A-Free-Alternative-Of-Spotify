@@ -16,7 +16,8 @@ export const musicApi = createApi({
   }),
   endpoints: (builder) => ({
     getSongsByCountry: builder.query({
-      query: () => `/top_country_tracks?country_code=IN&limit=50`,
+      query: (countryCode) =>
+        `/top_country_tracks?country_code=${countryCode}&limit=100`,
     }),
   }),
 });
