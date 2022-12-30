@@ -6,10 +6,7 @@ export const musicApi = createApi({
     baseUrl: "https://shazam-song-recognizer.p.rapidapi.com",
 
     prepareHeaders: (headers) => {
-      headers.set(
-        "X-RapidAPI-Key",
-        "ec49ee1146msh8af1cfc3c75dbbbp16168djsna1889bab30e2"
-      );
+      headers.set("X-RapidAPI-Key", import.meta.env.VITE_RAPID_API_KEY);
 
       return headers;
     },
